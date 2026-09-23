@@ -1,13 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>accessible-palette</title>
+    <meta
+      name="description"
+      content="An accessible color palette tool with WCAG contrast checking and color-blindness preview."
+    />
+    <title>Accessible Palette</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
-    <div id="app"></div>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <header class="site-header">
+      <h1 class="site-header__title">Accessible Palette</h1>
+      <p class="site-header__tagline">
+        Build color palettes that work for everyone.
+      </p>
+    </header>
+
+    <main id="main" class="site-main">
+      <!-- Palette Editor -->
+      <section class="panel" aria-labelledby="palette-heading">
+        <h2 id="palette-heading" class="panel__heading">Palette</h2>
+        <div id="palette" class="palette" role="list">
+          <!-- Color swatches will be injected here later -->
+        </div>
+        <button type="button" id="add-color" class="button button--primary">
+          + Add color
+        </button>
+      </section>
+
+      <!-- Contrast Checker -->
+      <section class="panel" aria-labelledby="contrast-heading">
+        <h2 id="contrast-heading" class="panel__heading">Contrast Checker</h2>
+        <div class="contrast">
+          <label class="field">
+            <span class="field__label">Color A</span>
+            <select id="contrast-a" class="field__input"></select>
+          </label>
+          <span class="contrast__vs" aria-hidden="true">vs</span>
+          <label class="field">
+            <span class="field__label">Color B</span>
+            <select id="contrast-b" class="field__input"></select>
+          </label>
+        </div>
+        <div
+          id="contrast-result"
+          class="contrast-result"
+          role="status"
+          aria-live="polite"
+        >
+          <!-- Ratio and badges will appear here -->
+          <p class="contrast-result__placeholder">
+            Select two colors to check contrast.
+          </p>
+        </div>
+      </section>
+
+      <!-- Color-Blind Preview -->
+      <section class="panel" aria-labelledby="cvd-heading">
+        <h2 id="cvd-heading" class="panel__heading">Color-Blind Preview</h2>
+        <div
+          class="cvd-tabs"
+          role="tablist"
+          aria-label="Color vision deficiency type"
+        >
+          <button
+            type="button"
+            class="cvd-tab is-active"
+            role="tab"
+            aria-selected="true"
+            data-cvd="normal"
+          >
+            Normal
+          </button>
+          <button
+            type="button"
+            class="cvd-tab"
+            role="tab"
+            aria-selected="false"
+            data-cvd="protanopia"
+          >
+            Protanopia
+          </button>
+          <button
+            type="button"
+            class="cvd-tab"
+            role="tab"
+            aria-selected="false"
+            data-cvd="deuteranopia"
+          >
+            Deuteranopia
+          </button>
+          <button
+            type="button"
+            class="cvd-tab"
+            role="tab"
+            aria-selected="false"
+            data-cvd="tritanopia"
+          >
+            Tritanopia
+          </button>
+        </div>
+        <div id="cvd-preview" class="cvd-preview" aria-live="polite">
+          <!-- Simulated swatches will be injected here later -->
+        </div>
+      </section>
+
+      <!-- Export -->
+      <section class="panel" aria-labelledby="export-heading">
+        <h2 id="export-heading" class="panel__heading">Export</h2>
+        <div class="export">
+          <button type="button" class="button" data-export="css">CSS</button>
+          <button type="button" class="button" data-export="json">JSON</button>
+          <button type="button" class="button" data-export="tailwind">
+            Tailwind
+          </button>
+        </div>
+        <pre
+          id="export-output"
+          class="export-output"
+          aria-live="polite"
+        ><code><!-- Exported code will appear here --></code></pre>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Made with accessibility in mind.
+        <a href="https://www.w3.org/WAI/WCAG21/quickref/">WCAG 2.1 reference</a>.
+      </p>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
