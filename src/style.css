@@ -208,6 +208,19 @@ a:hover {
   color: var(--color-text);
 }
 
+textarea.field__input {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+textarea.field__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  outline: none;
+}
+
 /* ---------------------------------------------------------
    Contrast checker
    --------------------------------------------------------- */
