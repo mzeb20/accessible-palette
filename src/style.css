@@ -358,12 +358,77 @@ textarea.field__input:focus {
   align-items: center;
 }
 
+.contrast-result:has(.contrast-result__preview) {
+  background: var(--color-surface);
+  border-style: solid;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .contrast-result__placeholder {
   margin: 0;
   color: var(--color-text-muted);
   font-size: 0.9375rem;
 }
 
+/* Populated contrast result */
+.contrast-result__preview {
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--color-border);
+}
+
+.contrast-result__sample {
+  margin: 0 0 var(--space-2);
+  font-size: 0.9375rem;
+}
+
+.contrast-result__sample:last-child {
+  margin-bottom: 0;
+}
+
+.contrast-result__sample--large {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.contrast-result__ratio {
+  margin: 0 0 var(--space-3);
+  font-size: 1rem;
+}
+
+.contrast-result__ratio strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.contrast-result__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.badge--pass {
+  background: #e6f4ea;
+  color: #135a2c;
+}
+
+.badge--fail {
+  background: #fdecea;
+  color: #8a1c1c;
+}
 /* ---------------------------------------------------------
    CVD preview
    --------------------------------------------------------- */
