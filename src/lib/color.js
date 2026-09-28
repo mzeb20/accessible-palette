@@ -166,3 +166,12 @@ function hslToRgb(h, s, l, a = 1) {
     a,
   };
 }
+
+/**
+ * Convert HSL values to a lowercase hex string "#rrggbb".
+ * h: 0–360, s: 0–100, l: 0–100
+ */
+export function hslToHex(h, s, l) {
+  const { r, g, b } = hslToRgb(h, s, l, 1);
+  return rgbToHex({ r, g, b });
+}

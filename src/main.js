@@ -1,5 +1,8 @@
 import './style.css';
+import { initPalette } from './ui/palette.js';
+import { seedPalette } from './state.js';
 
-// Milestone 1: layout only.
-// Behavior is added in later milestones.
-console.log('Accessible Palette — layout ready');
+seedPalette();
+initPalette();
+
+console.log('Accessible Palette — palette editor ready');

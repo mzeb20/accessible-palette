@@ -5,6 +5,7 @@ import {
   rgbToHex,
   hexToRgb,
   formatRgb,
+  hslToHex,
 } from './color.js';
 
 describe('parseColor', () => {
@@ -126,3 +127,24 @@ describe('formatRgb', () => {
   });
 });
 
+describe('hslToHex', () => {
+  it('converts pure red', () => {
+    expect(hslToHex(0, 100, 50)).toBe('#ff0000');
+  });
+
+  it('converts pure green', () => {
+    expect(hslToHex(120, 100, 50)).toBe('#00ff00');
+  });
+
+  it('converts pure blue', () => {
+    expect(hslToHex(240, 100, 50)).toBe('#0000ff');
+  });
+
+  it('treats 360° as 0°', () => {
+    expect(hslToHex(360, 100, 50)).toBe('#ff0000');
+  });
+
+  it('produces gray when saturation is 0', () => {
+    expect(hslToHex(0, 0, 50)).toBe('#808080');
+  });
+});
