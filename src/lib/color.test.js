@@ -63,8 +63,11 @@ describe('parseColor', () => {
     expect(parseColor('rgb(300, 0, 0)')).toBeNull();
     expect(parseColor('rgb(-1, 0, 0)')).toBeNull();
   });
-});
 
+  it('parses hsl() strings with percentages', () => {
+    expect(parseColor('hsl(360, 100%, 50%)')).toEqual({ r: 255, g: 0, b: 0, a: 1});
+  });
+});
 describe('isValidColor', () => {
   it('returns true for valid colors', () => {
     expect(isValidColor('#abc')).toBe(true);
@@ -122,3 +125,4 @@ describe('formatRgb', () => {
     expect(formatRgb({ r: 10.7, g: 20.2, b: 30.9 })).toBe('rgb(11, 20, 31)');
   });
 });
+
