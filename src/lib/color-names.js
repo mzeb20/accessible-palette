@@ -3,7 +3,7 @@
 // Uses HSL rules so the logic is understandable and tweakable.
 // ---------------------------------------------------------
 
-import { parseColor } from './color.js';
+import { parseColor, rgbToHsl } from './color.js';
 
 /**
  * Hue sectors — every 30° gets a name. 12 sectors, 360°.
@@ -24,36 +24,6 @@ const HUE_SECTORS = [
   { max: 345, name: 'Pink' },
   { max: 360, name: 'Red' }, // wrap-around
 ];
-
-/**
- * Convert an { r, g, b } object to { h, s, l } (h in 0–360, s/l in 0–100).
- */
-function rgbToHsl({ r, g, b }) {
-  const R = r / 255;
-  const G = g / 255;
-  const B = b / 255;
-
-  const max = Math.max(R, G, B);
-  const min = Math.min(R, G, B);
-  const delta = max - min;
-
-  const L = (max + min) / 2;
-  let H = 0;
-  let S = 0;
-
-  if (delta !== 0) {
-    S = L > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-
-    switch (max) {
-      case R: H = ((G - B) / delta + (G < B ? 6 : 0)); break;
-      case G: H = ((B - R) / delta + 2); break;
-      case B: H = ((R - G) / delta + 4); break;
-    }
-    H *= 60;
-  }
-
-  return { h: H, s: S * 100, l: L * 100 };
-}
 
 /**
  * Find the hue sector name for a given hue (0–360).

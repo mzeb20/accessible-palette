@@ -143,7 +143,7 @@ function parseHslFunction(str) {
  * Standard HSL -> RGB conversion.
  * h: 0–360, s: 0–100, l: 0–100, a: 0–1
  */
-function hslToRgb(h, s, l, a = 1) {
+export function hslToRgb(h, s, l, a = 1) {
   const S = s / 100;
   const L = l / 100;
   const C = (1 - Math.abs(2 * L - 1)) * S;
@@ -165,6 +165,44 @@ function hslToRgb(h, s, l, a = 1) {
     b: Math.round((b1 + m) * 255),
     a,
   };
+}
+
+/**
+ * Standard RGB -> HSL conversion.
+ * Returns { h: 0–360, s: 0–100, l: 0–100 }.
+ * Alpha is not included — use the original RGB object if you need it.
+ */
+export function rgbToHsl({ r, g, b }) {
+  const R = r / 255;
+  const G = g / 255;
+  const B = b / 255;
+
+  const max = Math.max(R, G, B);
+  const min = Math.min(R, G, B);
+  const delta = max - min;
+
+  const l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+
+  if (delta !== 0) {
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+    switch (max) {
+      case R:
+        h = (G - B) / delta + (G < B ? 6 : 0);
+        break;
+      case G:
+        h = (B - R) / delta + 2;
+        break;
+      case B:
+        h = (R - G) / delta + 4;
+        break;
+    }
+    h *= 60;
+  }
+
+  return { h, s: s * 100, l: l * 100 };
 }
 
 /**
