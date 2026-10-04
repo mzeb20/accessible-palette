@@ -4,6 +4,7 @@
 // ---------------------------------------------------------
 
 import { isValidColor } from '../lib/color.js';
+import { colorName } from '../lib/color-names.js';
 import {
   getPalette,
   subscribe,
@@ -82,6 +83,12 @@ function renderSwatch(swatch) {
     }
   });
 
+  // Color name label
+  const name = document.createElement('span');
+  name.className = 'swatch__name';
+  name.textContent = colorName(swatch.hex) ?? '—';
+  name.setAttribute('aria-hidden', 'true');
+
   // Remove button
   const remove = document.createElement('button');
   remove.type = 'button';
@@ -92,8 +99,9 @@ function renderSwatch(swatch) {
     removeSwatch(swatch.id);
   });
 
-  wrapper.appendChild(picker);
+   wrapper.appendChild(picker);
   wrapper.appendChild(hex);
+  wrapper.appendChild(name);
   wrapper.appendChild(remove);
   return wrapper;
 }
