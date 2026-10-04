@@ -4,8 +4,9 @@
 // All math lives in lib/contrast.js.
 // ---------------------------------------------------------
 
-import { getPalette, subscribe } from '../state.js';
+import { getPalette, subscribe, updateSwatch } from '../state.js';
 import { wcagReport } from '../lib/contrast.js';
+import { suggestFix } from '../lib/contrast-fix.js';
 
 const selectA = document.getElementById('contrast-a');
 const selectB = document.getElementById('contrast-b');
@@ -98,7 +99,7 @@ function renderResult() {
     return;
   }
 
-  renderReport(report, a.hex, b.hex);
+  renderReport(report, a, b);   // ← pass the swatch objects
 }
 
 function renderEmptyState() {
@@ -109,7 +110,10 @@ function renderEmptyState() {
   resultEl.appendChild(p);
 }
 
-function renderReport(report, hexA, hexB) {
+function renderReport(report, swatchA, swatchB) {
+  const hexA = swatchA.hex;
+  const hexB = swatchB.hex;
+
   resultEl.innerHTML = '';
 
   // Live preview of the two colors together.
@@ -124,7 +128,8 @@ function renderReport(report, hexA, hexB) {
   normalText.textContent = 'Normal text sample';
 
   const largeText = document.createElement('p');
-  largeText.className = 'contrast-result__sample contrast-result__sample--large';
+  largeText.className =
+    'contrast-result__sample contrast-result__sample--large';
   largeText.textContent = 'Large text sample';
 
   preview.appendChild(normalText);
@@ -138,7 +143,6 @@ function renderReport(report, hexA, hexB) {
   // Pass/fail badges.
   const badges = document.createElement('div');
   badges.className = 'contrast-result__badges';
-
   badges.appendChild(makeBadge('AA Normal', report.aaNormal));
   badges.appendChild(makeBadge('AA Large', report.aaLarge));
   badges.appendChild(makeBadge('AAA Normal', report.aaaNormal));
@@ -147,6 +151,14 @@ function renderReport(report, hexA, hexB) {
   resultEl.appendChild(preview);
   resultEl.appendChild(ratioEl);
   resultEl.appendChild(badges);
+
+  // Only show suggestion if something fails.
+  const somethingFails =
+    !report.aaNormal || !report.aaLarge || !report.aaaNormal || !report.aaaLarge;
+
+  if (somethingFails) {
+    renderSuggestion(swatchA, swatchB, report);
+  }
 }
 
 function makeBadge(label, isPass) {
@@ -154,4 +166,61 @@ function makeBadge(label, isPass) {
   el.className = `badge ${isPass ? 'badge--pass' : 'badge--fail'}`;
   el.textContent = `${isPass ? '✓' : '✕'} ${label}`;
   return el;
+}
+
+function renderSuggestion(swatchA, swatchB, report) {
+  const fix = suggestFix(swatchA.hex, swatchB.hex);
+  if (!fix || fix.steps === 0) return;
+
+  const swatch = fix.target === 'A' ? swatchA : swatchB;
+  const other = fix.target === 'A' ? swatchB : swatchA;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'suggest-fix';
+
+  const heading = document.createElement('p');
+  heading.className = 'suggest-fix__heading';
+  heading.textContent = 'Suggested fix';
+
+  const body = document.createElement('p');
+  body.className = 'suggest-fix__body';
+  body.textContent = `Change ${swatch.hex} to ${fix.hex} to pass AA Normal.`;
+
+  const preview = document.createElement('div');
+  preview.className = 'suggest-fix__preview';
+
+  const oldChip = document.createElement('span');
+  oldChip.className = 'suggest-fix__chip';
+  oldChip.style.background = swatch.hex;
+  oldChip.title = `Current: ${swatch.hex}`;
+
+  const arrow = document.createElement('span');
+  arrow.className = 'suggest-fix__arrow';
+  arrow.textContent = '→';
+  arrow.setAttribute('aria-hidden', 'true');
+
+  const newChip = document.createElement('span');
+  newChip.className = 'suggest-fix__chip';
+  newChip.style.background = fix.hex;
+  newChip.title = `Suggested: ${fix.hex}`;
+
+  preview.appendChild(oldChip);
+  preview.appendChild(arrow);
+  preview.appendChild(newChip);
+
+  const apply = document.createElement('button');
+  apply.type = 'button';
+  apply.className = 'button button--primary';
+  apply.textContent = 'Apply fix';
+  apply.addEventListener('click', () => {
+    updateSwatch(swatch.id, fix.hex);
+    // The palette update triggers a re-render through subscribe()
+  });
+
+  wrap.appendChild(heading);
+  wrap.appendChild(body);
+  wrap.appendChild(preview);
+  wrap.appendChild(apply);
+
+  resultEl.appendChild(wrap);
 }
